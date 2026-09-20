@@ -1,0 +1,71 @@
+services:
+
+  user-db:
+    image: postgres:16
+    container_name: food-user-db
+    environment:
+      POSTGRES_DB: user_service_db
+      POSTGRES_USER: food_user
+      POSTGRES_PASSWORD: food_password
+    ports:
+      - "5432:5432"
+    volumes:
+      - user-db-data:/var/lib/postgresql/data
+
+  restaurant-db:
+    image: postgres:16
+    container_name: food-restaurant-db
+    environment:
+      POSTGRES_DB: restaurant_service_db
+      POSTGRES_USER: restaurant_user
+      POSTGRES_PASSWORD: restaurant_password
+    ports:
+      - "5433:5432"
+    volumes:
+      - restaurant-db-data:/var/lib/postgresql/data
+
+  order-db:
+    image: postgres:16
+    container_name: food-order-db
+    environment:
+      POSTGRES_DB: order_service_db
+      POSTGRES_USER: order_user
+      POSTGRES_PASSWORD: order_password
+    ports:
+      - "5434:5432"
+    volumes:
+      - order-db-data:/var/lib/postgresql/data
+
+  payment-db:
+    image: postgres:16
+    container_name: food-payment-db
+    environment:
+      POSTGRES_DB: payment_service_db
+      POSTGRES_USER: payment_user
+      POSTGRES_PASSWORD: payment_password
+    ports:
+      - "5435:5432"
+    volumes:
+      - payment-db-data:/var/lib/postgresql/data
+
+  rabbitmq:
+    image: rabbitmq:3-management
+    container_name: food-rabbitmq
+    ports:
+      - "5672:5672"
+      - "15672:15672"
+
+  redis:
+    image: redis:7
+    container_name: food-redis
+    ports:
+      - "6379:6379"
+    volumes:
+      - redis-data:/data
+
+volumes:
+  user-db-data:
+  restaurant-db-data:
+  order-db-data:
+  redis-data:
+  payment-db-data:
