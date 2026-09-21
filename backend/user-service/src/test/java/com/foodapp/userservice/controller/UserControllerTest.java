@@ -119,6 +119,23 @@ public class UserControllerTest {
     }
 
     @Test
+    void getDefaultAddress_shouldReturnAddress() throws Exception {
+
+        DefaultAddressResponse response = createAddressResponse();
+
+        when(userService.getDefaultAddress(1L)).thenReturn(response);
+
+        mockMvc.perform(get("/api/users/1/default-address"))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(10L))
+                .andExpect(jsonPath("$.userId").value(1L))
+                .andExpect(jsonPath("$.recipientName").value("Test User"))
+                .andExpect(jsonPath("$.city").value("Dublin"));
+
+        verify(userService).getDefaultAddress(1L);
+    }
+
+    @Test
     void saveDefaultAddress_shouldReturnAddress()
             throws Exception {
 
@@ -152,6 +169,15 @@ public class UserControllerTest {
     }
 
     @Test
+    void deleteDefaultAddress_shouldReturnNoContent() throws Exception {
+
+        mockMvc.perform(delete("/api/users/1/default-address"))
+                .andExpect(status().isNoContent());
+
+        verify(userService).deleteDefaultAddress(1L);
+    }
+
+    @Test
     void changePassword_shouldReturnNoContent()
             throws Exception {
 
@@ -168,6 +194,41 @@ public class UserControllerTest {
         verify(userService).changePassword(
                 eq(1L),
                 any(ChangePasswordRequest.class)
+        );
+    }
+
+    @Test
+    void updateStatus_shouldReturnUpdatedUser()
+        throws Exception {
+
+        UserResponse response = new UserResponse(
+                1L,
+                "user1@example.com",
+                "Test User",
+                UserRole.USER,
+                false,
+                LocalDateTime.now()
+        );
+
+        when(userService.updateUserStatus(
+                eq(1L),
+                any(UpdateUserStatusRequest.class)
+        )).thenReturn(response);
+
+        mockMvc.perform(patch("/api/users/1/status")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content("""
+                        {
+                        "enabled": false
+                        }
+                        """))
+                .andExpect(status().isOk())
+                .andExpect(jsonPath("$.id").value(1))
+                .andExpect(jsonPath("$.enabled").value(false));
+
+        verify(userService).updateUserStatus(
+                eq(1L),
+                any(UpdateUserStatusRequest.class)
         );
     }
 

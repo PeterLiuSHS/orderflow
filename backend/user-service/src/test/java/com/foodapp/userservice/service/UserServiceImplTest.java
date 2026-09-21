@@ -204,6 +204,7 @@ class UserServiceImplTest {
         );
     }
 
+    @Test
     void login_shouldThrowForbidden_whenUserIsDisabled() {
         User user = createUser();
         user.setEnabled(false);
